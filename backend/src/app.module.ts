@@ -1,19 +1,25 @@
 import { Module } from '@nestjs/common';
 import { TasksModule } from 'src/tasks/tasks.module';
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
-    type: "mysql",
-    host: "localhost",
-    port: 3307,
-    username: "root",
-    password: "root",
-    database: "taskdb",
-    entities: [__dirname +"/**/*.entity{.ts,.js}"],
-    synchronize: true
-
-  }), TasksModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.HOST,
+      port: parseInt(process.env.PORT),
+      username:  process.env.USER,
+      password: process.env.PASSWORD,
+      database: process.env.DATABASE,
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
+    }),
+    TasksModule,
+  ],
   controllers: [],
   providers: [],
 })
